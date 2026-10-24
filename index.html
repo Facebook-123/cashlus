@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#f5f5f3" />
+  <title>Accueil — Maquette bancaire</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --teal: #078c91;
+      --teal-dark: #087f83;
+      --ink: #252729;
+      --muted: #929496;
+      --page: #f5f5f3;
+      --line: #e8e8e6;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body { margin: 0; min-height: 100%; }
+
+    body {
+      background: var(--page);
+      color: var(--ink);
+      font-family: Arial, Helvetica, sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    button, a { font: inherit; }
+
+    .app {
+      width: min(100%, 480px);
+      min-height: 100vh;
+      margin: 0 auto;
+      padding: 24px 20px 112px;
+      overflow: hidden;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      min-height: 70px;
+      margin-bottom: 18px;
+    }
+
+    .profile {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-width: 0;
+    }
+
+    .avatar, .notification {
+      display: grid;
+      place-items: center;
+      width: 54px;
+      height: 54px;
+      flex: 0 0 auto;
+      border: 1px solid #e1e1df;
+      border-radius: 50%;
+      background: #fff;
+      color: #58b2b5;
+      box-shadow: 0 1px 2px rgba(0,0,0,.03);
+    }
+
+    .avatar {
+      overflow: hidden;
+      padding: 0;
+      cursor: pointer;
+    }
+
+    .avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .profile-picker {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      clip-path: inset(50%);
+    }
+
+    .profile-error {
+      margin: 4px 0 0;
+      color: #a33131;
+      font-size: 12px;
+    }
+
+    .name {
+      overflow: hidden;
+      font-size: 23px;
+      font-weight: 500;
+      letter-spacing: .015em;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .notification {
+      padding: 0;
+      cursor: default;
+    }
+
+    .notification svg { width: 25px; height: 25px; }
+
+    .demo-label {
+      margin: 0 0 12px;
+      color: #666b6c;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: .09em;
+      text-align: center;
+      text-transform: uppercase;
+    }
+
+    .blocked-notice {
+      margin-top: 16px;
+      padding: 18px;
+      border: 1px solid #f0d7aa;
+      border-radius: 20px;
+      background: #fff9ed;
+    }
+
+    .blocked-notice h1 {
+      margin: 0 0 8px;
+      color: #8a4b16;
+      font-size: 19px;
+    }
+
+    .blocked-notice p {
+      margin: 0;
+      color: #493d30;
+      font-size: 14px;
+      line-height: 1.5;
+    }
+
+    .blocked-notice p + p { margin-top: 8px; }
+
+    .account-card {
+      position: relative;
+      min-height: 214px;
+      padding: 27px 24px 23px;
+      overflow: hidden;
+      border-radius: 29px;
+      background:
+        radial-gradient(ellipse at 85% 115%, rgba(0, 116, 123, .34) 0 32%, transparent 32.5%),
+        radial-gradient(ellipse at 110% 110%, rgba(0, 116, 123, .25) 0 47%, transparent 47.5%),
+        linear-gradient(135deg, #27a3a8, #078d93);
+      color: white;
+    }
+
+    .account-card::before {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(145deg, transparent 43%, rgba(255,255,255,.045) 43.2% 67%, transparent 67.2%);
+      content: "";
+      pointer-events: none;
+    }
+
+    .balance-heading, .balance-row { position: relative; z-index: 1; }
+
+    .balance-heading {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      min-height: 38px;
+    }
+
+    .brand-mark {
+      display: grid;
+      width: 68px;
+      height: 40px;
+      place-items: center;
+      border: 2px solid rgba(255,255,255,.95);
+      border-radius: 10px;
+      background: #f7ffff;
+      color: var(--teal-dark);
+      box-shadow: inset 0 0 0 3px rgba(5,137,142,.18);
+    }
+
+    .brand-mark {
+      overflow: hidden;
+    }
+
+    .brand-mark img {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .balance-title {
+      font-size: 17px;
+      font-weight: 700;
+    }
+
+    .visibility {
+      display: grid;
+      width: 38px;
+      height: 38px;
+      place-items: center;
+      padding: 0;
+      border: 0;
+      border-radius: 50%;
+      background: rgba(255,255,255,.22);
+      color: white;
+      cursor: pointer;
+    }
+
+    .visibility svg { width: 22px; height: 22px; }
+
+    .balance-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin-top: 18px;
+    }
+
+    .balance {
+      display: flex;
+      align-items: baseline;
+      gap: 6px;
+      min-width: 0;
+      font-size: 22px;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+
+    .balance-amount {
+      font-size: clamp(34px, 9vw, 42px);
+      font-weight: 800;
+      letter-spacing: -.055em;
+    }
+
+    .add-button {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      min-height: 54px;
+      padding: 0 17px;
+      border: 0;
+      border-radius: 28px;
+      background: #f7fbfb;
+      color: #292d2e;
+      font-size: 18px;
+      white-space: nowrap;
+    }
+
+    .plus {
+      display: grid;
+      width: 31px;
+      height: 31px;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--teal);
+      color: white;
+      font-size: 24px;
+      font-weight: 600;
+      line-height: 1;
+    }
+
+    .activity-card {
+      padding: 0 0 9px;
+      border-radius: 0 0 28px 28px;
+      background: #fff;
+    }
+
+    .transaction {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      min-height: 116px;
+      padding: 19px 23px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .transaction.has-error { flex-wrap: wrap; }
+
+    .transaction-error {
+      flex: 1 0 100%;
+      margin: -12px 0 0;
+      color: #a33131;
+      font-size: 14px;
+      font-weight: 700;
+      text-align: right;
+    }
+
+    .transaction-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 19px;
+    }
+
+    .transaction-icon {
+      display: grid;
+      width: 58px;
+      height: 58px;
+      flex: 0 0 auto;
+      place-items: center;
+      border-radius: 50%;
+      background: #fafafa;
+      font-size: 28px;
+    }
+
+    .transaction-amount {
+      font-size: 19px;
+      font-weight: 700;
+      text-align: right;
+      white-space: nowrap;
+    }
+
+    .transaction-amount.deposit { color: var(--teal-dark); }
+
+    .transaction-date {
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 16px;
+      font-weight: 400;
+    }
+
+    .show-all {
+      display: block;
+      padding: 17px 10px 12px;
+      color: var(--teal-dark);
+      font-size: 19px;
+      text-align: center;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+    }
+
+    .quick-heading {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      margin: 22px 0 18px;
+      padding: 0 8px;
+    }
+
+    .quick-heading h1 {
+      margin: 0;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .view-toggle {
+      display: flex;
+      gap: 13px;
+      align-items: center;
+      padding: 11px 16px;
+      border: 1px solid #dededc;
+      border-radius: 28px;
+      background: #fff;
+      color: var(--teal-dark);
+      font-size: 19px;
+      letter-spacing: 2px;
+    }
+
+    .service-shortcut {
+      display: flex;
+      width: 124px;
+      min-height: 177px;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 10px;
+      padding: 0 8px;
+      color: var(--ink);
+      font-weight: 700;
+      line-height: 1.4;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .service-icon {
+      display: grid;
+      width: 100px;
+      height: 100px;
+      place-items: center;
+      border: 1px solid #e7e7e5;
+      border-radius: 23px;
+      background: #fff;
+      color: var(--teal);
+      font-size: 43px;
+    }
+
+    .invoice-card {
+      padding: 20px 18px 24px;
+      border: 1px solid #e6e6e4;
+      border-radius: 30px;
+      background: #fff;
+      box-shadow: 0 1px 2px rgba(0,0,0,.025);
+    }
+
+    .invoice-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 20px;
+      font-size: 20px;
+      font-weight: 700;
+    }
+
+    .invoice-title .service-icon {
+      width: 66px;
+      height: 66px;
+      border-radius: 20px;
+      font-size: 31px;
+    }
+
+    .providers {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 15px 9px;
+    }
+
+    .provider {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      color: var(--ink);
+      font-weight: 700;
+      line-height: 1.45;
+      text-align: center;
+      text-decoration: none;
+    }
+
+    .provider-logo {
+      display: grid;
+      width: 82px;
+      height: 82px;
+      place-items: center;
+      border-radius: 21px;
+      background: #fafafa;
+      color: var(--teal-dark);
+      font-size: 16px;
+      font-weight: 800;
+    }
+
+    .provider:nth-child(2) .provider-logo { color: #b01868; }
+    .provider:nth-child(3) .provider-logo { color: #bc2636; font-size: 12px; }
+    .provider:nth-child(4) .provider-logo { color: #1298a3; }
+    .provider:nth-child(5) .provider-logo { color: #d28a22; }
+
+    .bottom-nav {
+      position: fixed;
+      z-index: 3;
+      right: 0;
+      bottom: 0;
+      left: 0;
+      display: grid;
+      width: min(100%, 480px);
+      height: 91px;
+      grid-template-columns: repeat(5, 1fr);
+      align-items: center;
+      margin: 0 auto;
+      padding: 8px 10px 10px;
+      border-top: 1px solid #e7e7e5;
+      background: rgba(255,255,255,.97);
+    }
+
+    .nav-item {
+      display: flex;
+      min-width: 0;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      color: #85898a;
+      font-size: 14px;
+      text-decoration: none;
+    }
+
+    .nav-item.active { color: var(--teal); }
+
+    .nav-icon {
+      display: grid;
+      width: 28px;
+      height: 28px;
+      place-items: center;
+    }
+
+    .nav-icon svg {
+      width: 25px;
+      height: 25px;
+      fill: none;
+      stroke: currentColor;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      stroke-width: 1.8;
+    }
+
+    .scan {
+      width: 64px;
+      height: 64px;
+      margin-top: -28px;
+      border: 5px solid #fff;
+      border-radius: 50%;
+      background: var(--teal);
+      color: #fff;
+    }
+
+    .scan svg { width: 32px; height: 32px; }
+
+    @media (min-width: 600px) {
+      body { padding: 20px 0; }
+
+      .app {
+        min-height: calc(100vh - 40px);
+        border-radius: 28px;
+        box-shadow: 0 12px 42px rgba(0,0,0,.12);
+      }
+
+      .bottom-nav {
+        bottom: 20px;
+        border-radius: 0 0 28px 28px;
+      }
+    }
+
+    @media (max-width: 360px) {
+      .app { padding-right: 14px; padding-left: 14px; }
+      .account-card { padding-right: 18px; padding-left: 18px; }
+      .add-button { gap: 6px; padding: 0 11px; font-size: 16px; }
+      .balance { font-size: 18px; }
+      .balance-amount { font-size: 34px; }
+      .nav-item { font-size: 12px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <header class="topbar">
+      <div class="profile">
+        <button class="avatar" type="button" aria-label="Choisir une photo de profil">
+          <img class="avatar-image" src="asserts/profils.jpg" alt="Photo de profil" />
+        </button>
+        <input class="profile-picker" id="profile-photo" type="file" accept="image/*" aria-label="Sélectionner une photo de profil" />
+        <div>
+          <span class="name">OUMAR B.</span>
+          <p class="profile-error" role="status" hidden></p>
+        </div>
+      </div>
+      <button class="notification" type="button" aria-label="Notifications">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M18 9a6 6 0 0 0-5-5.9V2a1 1 0 0 0-2 0v1.1A6 6 0 0 0 6 9c0 7-3 7-3 9h18c0-2-3-2-3-9M9 20a3 3 0 0 0 6 0z"></path></svg>
+      </button>
+    </header>
+
+    <p class="demo-label">Démo non officielle — données fictives — aucun document à envoyer</p>
+
+    <section class="account-card" aria-label="Solde du compte">
+      <div class="balance-heading">
+        <span class="brand-mark">
+          <img src="assets/logo-cashplus.png" alt="Logo Cash Plus de démonstration" />
+        </span>
+        <span class="balance-title">Solde disponible</span>
+        <button class="visibility" type="button" aria-label="Masquer le solde" aria-pressed="false">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6S2 12 2 12Z"></path><circle cx="12" cy="12" r="3"></circle></svg>
+        </button>
+      </div>
+      <div class="balance-row">
+        <div class="balance" aria-live="polite"><span class="balance-amount">13 500</span><span>DH</span></div>
+        <button class="add-button" type="button"><span class="plus" aria-hidden="true">+</span><span>Ajouter</span></button>
+      </div>
+    </section>
+
+    <section class="blocked-notice" aria-labelledby="blocked-title">
+      <h1 id="blocked-title">Compte bloqué — simulation</h1>
+      <p><strong>Motif :</strong> justificatif d’identité à vérifier. Dans cette maquette, les documents cités sont le passeport ou la carte de séjour.</p>
+      <p>Cette page ne vérifie pas votre identité et ne collecte aucun document. Pour toute vraie demande, utilisez uniquement le canal sécurisé officiel de votre établissement.</p>
+    </section>
+
+    <section class="activity-card" aria-label="Historique des opérations">
+      <div class="transaction has-error">
+        <div class="transaction-info">
+          <span class="transaction-icon" aria-hidden="true">↗</span>
+          <span>Retrait</span>
+        </div>
+        <div>
+          <div class="transaction-amount">-500.00 DH</div>
+          <div class="transaction-date">23 oct. 2026</div>
+        </div>
+        <p class="transaction-error" role="status">Erreur : veuillez contacter le service clients.</p>
+      </div>
+      <div class="transaction-list" id="operations" hidden>
+        <div class="transaction">
+          <div class="transaction-info">
+            <span class="transaction-icon" aria-hidden="true">↙</span>
+            <span>Dépôt</span>
+          </div>
+          <div>
+            <div class="transaction-amount deposit">+1 200.00 DH</div>
+            <div class="transaction-date">23 oct. 2026</div>
+          </div>
+        </div>
+        <div class="transaction">
+          <div class="transaction-info">
+            <span class="transaction-icon" aria-hidden="true">↙</span>
+            <span>Dépôt</span>
+          </div>
+          <div>
+            <div class="transaction-amount deposit">+1 500.00 DH</div>
+            <div class="transaction-date">22 oct. 2026</div>
+          </div>
+        </div>
+        <div class="transaction">
+          <div class="transaction-info">
+            <span class="transaction-icon" aria-hidden="true">↗</span>
+            <span>Retrait</span>
+          </div>
+          <div>
+            <div class="transaction-amount">-12 000.00 DH</div>
+            <div class="transaction-date">21 oct. 2026</div>
+          </div>
+        </div>
+        <div class="transaction">
+          <div class="transaction-info">
+            <span class="transaction-icon" aria-hidden="true">↗</span>
+            <span>Retrait</span>
+          </div>
+          <div>
+            <div class="transaction-amount">-12 000.00 DH</div>
+            <div class="transaction-date">10 oct. 2026</div>
+          </div>
+        </div>
+      </div>
+      <button class="show-all" type="button" aria-expanded="false" aria-controls="operations">Afficher tout</button>
+    </section>
+
+    <section aria-label="Accès rapide">
+      <div class="quick-heading">
+        <h1>Accès rapide</h1>
+        <div class="view-toggle" aria-hidden="true"><span>▪▪</span><span>☷</span></div>
+      </div>
+      <a class="service-shortcut" href="#factures">
+        <span class="service-icon" aria-hidden="true">🧾</span>
+        <span>Paiement de<br />factures</span>
+      </a>
+    </section>
+
+    <section class="invoice-card" id="factures" aria-label="Payer une facture">
+      <h2 class="invoice-title"><span class="service-icon" aria-hidden="true">🧾</span><span>Payer une facture</span></h2>
+      <div class="providers">
+        <a class="provider" href="#jawaz"><span class="provider-logo">jawaz</span><span>Jawaz<br />(ADM)</span></a>
+        <a class="provider" href="#inwi"><span class="provider-logo">inwi</span><span>inwi<br />Factures</span></a>
+        <a class="provider" href="#iam"><span class="provider-logo">maroc<br />telecom</span><span>IAM<br />Factures</span></a>
+        <a class="provider" href="#cnss"><span class="provider-logo">CNSS</span><span>CNSS<br />Services</span></a>
+        <a class="provider" href="#autres"><span class="provider-logo">✦</span><span>Autres<br />factures</span></a>
+      </div>
+    </section>
+  </main>
+
+  <nav class="bottom-nav" aria-label="Navigation principale">
+    <a class="nav-item active" href="#accueil" aria-current="page">
+      <span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m3 10 9-7 9 7v10a1 1 0 0 1-1 1h-5v-7H9v7H4a1 1 0 0 1-1-1z"></path></svg></span>
+      <span>Accueil</span>
+    </a>
+    <a class="nav-item" href="#services">
+      <span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="7" rx="1"></rect><rect x="14" y="3" width="7" height="7" rx="1"></rect><rect x="3" y="14" width="7" height="7" rx="1"></rect><rect x="14" y="14" width="7" height="7" rx="1"></rect></svg></span>
+      <span>Services</span>
+    </a>
+    <a class="nav-item" href="#scanner" aria-label="Scanner">
+      <span class="nav-icon scan"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9V4h5M15 4h5v5M20 15v5h-5M9 20H4v-5M8 8h3v3H8zM13 8h3v3h-3zM8 13h3v3H8zM14 14h2M16 16h1"></path></svg></span>
+    </a>
+    <a class="nav-item" href="#cartes">
+      <span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5" width="19" height="14" rx="2"></rect><path d="M3 10h18M7 15h4"></path></svg></span>
+      <span>Cartes</span>
+    </a>
+    <a class="nav-item" href="#compte">
+      <span class="nav-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h12v18l-2-1.5-2 1.5-2-1.5-2 1.5-2-1.5L6 21zM9 8h6M9 12h6M9 16h4"></path></svg></span>
+      <span>Compte</span>
+    </a>
+  </nav>
+
+  <script>
+    const profilePicker = document.querySelector("#profile-photo");
+    const profileButton = document.querySelector(".avatar");
+    const profileImage = document.querySelector(".avatar-image");
+    const profileError = document.querySelector(".profile-error");
+    let profilePhotoUrl;
+
+    profileButton.addEventListener("click", () => profilePicker.click());
+
+    profilePicker.addEventListener("change", () => {
+      const photo = profilePicker.files[0];
+      profileError.hidden = true;
+      profileError.textContent = "";
+      if (!photo) return;
+
+      if (!photo.type.startsWith("image/")) {
+        profileError.textContent = "Choisissez un fichier image.";
+        profileError.hidden = false;
+        profilePicker.value = "";
+        return;
+      }
+
+      if (photo.size > 5 * 1024 * 1024) {
+        profileError.textContent = "La photo doit faire 5 Mo maximum.";
+        profileError.hidden = false;
+        profilePicker.value = "";
+        return;
+      }
+
+      if (profilePhotoUrl) URL.revokeObjectURL(profilePhotoUrl);
+      profilePhotoUrl = URL.createObjectURL(photo);
+
+      profileImage.src = profilePhotoUrl;
+      profileButton.setAttribute("aria-label", "Changer la photo de profil");
+    });
+
+    const visibilityButton = document.querySelector(".visibility");
+    const balanceAmount = document.querySelector(".balance-amount");
+    const originalBalance = balanceAmount.textContent;
+
+    const historyButton = document.querySelector(".show-all");
+    const transactionList = document.querySelector("#operations");
+
+    let sampleSeed = 20261024;
+    const nextSampleRandom = () => {
+      sampleSeed = (Math.imul(sampleSeed, 1664525) + 1013904223) >>> 0;
+      return sampleSeed / 4294967296;
+    };
+    const sampleDateFormatter = new Intl.DateTimeFormat("fr-FR", {
+      day: "numeric",
+      month: "short",
+      year: "numeric",
+      timeZone: "UTC"
+    });
+    const sampleAmountFormatter = new Intl.NumberFormat("fr-FR", {
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 2
+    });
+
+    for (let index = 0; index < 30; index += 1) {
+      const isDeposit = nextSampleRandom() < 0.5;
+      const amount = (Math.floor(nextSampleRandom() * 40) + 2) * 50;
+      const date = new Date(Date.UTC(2026, 9, 9 - Math.round(index * 38 / 29)));
+      const transaction = document.createElement("div");
+      transaction.className = "transaction";
+
+      const info = document.createElement("div");
+      info.className = "transaction-info";
+      const icon = document.createElement("span");
+      icon.className = "transaction-icon";
+      icon.setAttribute("aria-hidden", "true");
+      icon.textContent = isDeposit ? "↙" : "↗";
+      const type = document.createElement("span");
+      type.textContent = isDeposit ? "Dépôt" : "Retrait";
+      info.append(icon, type);
+
+      const details = document.createElement("div");
+      const amountLabel = document.createElement("div");
+      amountLabel.className = isDeposit ? "transaction-amount deposit" : "transaction-amount";
+      amountLabel.textContent = `${isDeposit ? "+" : "-"}${sampleAmountFormatter.format(amount)} DH`;
+      const dateLabel = document.createElement("div");
+      dateLabel.className = "transaction-date";
+      dateLabel.textContent = sampleDateFormatter.format(date);
+      details.append(amountLabel, dateLabel);
+
+      transaction.append(info, details);
+      transactionList.append(transaction);
+    }
+
+    historyButton.addEventListener("click", () => {
+      const isExpanded = historyButton.getAttribute("aria-expanded") === "true";
+      transactionList.hidden = isExpanded;
+      historyButton.setAttribute("aria-expanded", String(!isExpanded));
+      historyButton.textContent = isExpanded ? "Afficher tout" : "Afficher moins";
+    });
+
+    visibilityButton.addEventListener("click", () => {
+      const isHidden = visibilityButton.getAttribute("aria-pressed") === "true";
+      balanceAmount.textContent = isHidden ? originalBalance : "•••••";
+      visibilityButton.setAttribute("aria-pressed", String(!isHidden));
+      visibilityButton.setAttribute("aria-label", isHidden ? "Masquer le solde" : "Afficher le solde");
+    });
+  </script>
+</body>
+</html>
